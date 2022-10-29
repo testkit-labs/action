@@ -1,0 +1,36 @@
+{
+  "name": "@testkit-labs/action",
+  "version": "0.1.0",
+  "description": "GitHub action to run Testkit tests in the CI",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "test": "jest",
+    "all": "npm run lint && npm run prepare && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/actions/javascript-action.git"
+  },
+  "keywords": [
+    "Testkit",
+    "Testing",
+    "CI"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/testkit-labs/action/issues"
+  },
+  "homepage": "https://github.com/testkit-labs/action#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/http-client": "^2.0.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.31.1",
+    "eslint": "^8.0.0",
+    "jest": "^27.2.5"
+  }
+}
