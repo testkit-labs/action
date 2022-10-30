@@ -2819,6 +2819,7 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(186);
 const http = __nccwpck_require__(255);
+const auth = __nccwpck_require__(526);
 
 const BASE_URL = "https://app.testkit.app/api/v1";
 const INITIAL_DELAY = 10000;
@@ -2835,7 +2836,7 @@ async function run() {
     const apiKey = core.getInput("api_key");
     core.setSecret(apiKey);
 
-    const authBearer = new http.BearerCredentialHandler(apiKey);
+    const authBearer = new auth.BearerCredentialHandler(apiKey);
     client = new http.HttpClient("testkit-action", [authBearer]);
 
     await authenticate();
@@ -2853,24 +2854,15 @@ async function poll() {
     return;
   }
 
-  const response = client.getJson(
-    `https://app.testkit.app/api/v1/run/${currentGroupRun.id}`
+  const response = await client.getJson(
+    `${BASE_URL}/run/${currentGroupRun.id}`
   );
 
-  if (response.message.statusCode !== 200) {
+  if (response.statusCode !== 200) {
     throw new Error("Failed to poll for test results");
   }
 
-  const { finished, id, runs } = await response.readBody();
-  runs.forEach((run) => {
-    const { id, status, name } = run;
-    const previousRunState = currentGroupRun.runs.find((r) => r.id === id);
-    if (status !== previousRunState.status) {
-      core.info(`Test suite ${name} status: ${status}...`);
-    }
-  });
-
-  currentGroupRun = { finished, id, runs };
+  const { finished, id, runs } = response.result;
 
   if (finished) {
     logSummary(runs);
@@ -2881,6 +2873,16 @@ async function poll() {
     return;
   }
 
+  runs.forEach((run) => {
+    const { id, status, name } = run;
+    const previousRunState = currentGroupRun.runs.find((r) => r.id === id);
+    if (status !== previousRunState.status) {
+      core.info(`Test suite ${name} status: ${status ? status : "pending"}`);
+    }
+  });
+
+  currentGroupRun = { finished, id, runs };
+
   pollCount++;
   setTimeout(poll, POLL_INTERVAL);
 }
@@ -2889,35 +2891,38 @@ async function authenticate() {
   core.info("Authenticating with Testkit...");
   const response = await client.postJson(`${BASE_URL}/ci_auth`);
 
-  if (response.message.statusCode !== 200) {
+  if (response.statusCode !== 200) {
     throw new Error(
       `Testkit authentication failed: ${response.message.statusMessage}`
     );
   }
-  const { name } = await response.readBody();
+  const { name } = response.result;
   core.info(`Authenticated as Organization: ${name}`);
 }
 
 async function runTestSuites() {
   core.info("Running tests...");
   const testResponse = await client.postJson(`${BASE_URL}/run`);
-  if (testResponse.message.statusCode !== 200) {
+  if (testResponse.statusCode !== 200) {
     throw new Error(
       `Testkit test run failed: ${testResponse.message.statusMessage}`
     );
   }
 
-  const { id, runs } = await testResponse.readBody();
+  const { id, runs } = testResponse.result;
   currentGroupRun = { finished: false, id, runs };
   core.info(`Running ${runs.length} test suites...`);
   setTimeout(poll, INITIAL_DELAY);
 }
 
 function logSummary(runs) {
+  core.info("\n\n===============================================");
+  core.info("=============== Testkit Summary ===============");
+  core.info("===============================================");
   runs.forEach((run) => {
     const { id, status, name } = run;
     core.info(
-      `Test suite ${name} ${status}: https://app.testkit.app/test_suite_runs/${id}`
+      `${status === "failed" ? "✗" : "✔"} ${name} result: https://app.testkit.app/test_suite_runs/${id}`
     );
   });
 }
