@@ -1,6 +1,6 @@
 {
   "name": "@testkit-labs/action",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "GitHub action to run Testkit tests in the CI",
   "main": "index.js",
   "scripts": {
