@@ -1,6 +1,7 @@
 const core = require("@actions/core");
 const http = require("@actions/http-client");
 const auth = require("@actions/http-client/lib/auth");
+const styles = require("ansi-styles");
 
 const BASE_URL = "https://app.testkit.app/api/v1";
 const INITIAL_DELAY = 10000;
@@ -56,7 +57,10 @@ async function poll() {
   runs.forEach((run) => {
     const { id, status, name } = run;
     const previousRunState = currentGroupRun.runs.find((r) => r.id === id);
-    if (status !== previousRunState.status && ["failed", "passed"].includes(status)) {
+    if (
+      status !== previousRunState.status &&
+      ["failed", "passed"].includes(status)
+    ) {
       core.info(`Test suite ${name} ${status ? status : "pending"}`);
     }
   });
@@ -102,9 +106,17 @@ function logSummary(runs) {
   runs.forEach((run) => {
     const { id, status, name } = run;
     core.info(
-      `${status === "failed" ? "✗" : "✔"} ${name} result: https://app.testkit.app/test_suite_runs/${id}`
+      `${icon(
+        status
+      )} ${name} result: https://app.testkit.app/test_suite_runs/${id}`
     );
   });
+}
+
+function icon(status) {
+  return status === "failed"
+    ? `${styles.red.open}✗${styles.red.close}`
+    : `${styles.green.open}✔${styles.green.close}`;
 }
 
 run();

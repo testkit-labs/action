@@ -26,7 +26,8 @@
   "homepage": "https://github.com/testkit-labs/action#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@actions/http-client": "^2.0.1"
+    "@actions/http-client": "^2.0.1",
+    "ansi-styles": "^6.2.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.31.1",
