@@ -11,7 +11,6 @@ let client;
 let pollCount = 0;
 let currentGroupRun;
 
-// most @actions toolkit packages have async methods
 async function run() {
   try {
     const apiKey = core.getInput("api_key");
