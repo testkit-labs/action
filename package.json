@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "GitHub action to run Testkit tests in the CI",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint .",
     "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
@@ -26,8 +27,7 @@
   "homepage": "https://github.com/testkit-labs/action#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@actions/http-client": "^2.0.1",
-    "ansi-styles": "^6.2.1"
+    "@actions/http-client": "^2.0.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.31.1",

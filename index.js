@@ -1,7 +1,6 @@
 const core = require("@actions/core");
 const http = require("@actions/http-client");
 const auth = require("@actions/http-client/lib/auth");
-const styles = require("ansi-styles");
 
 const BASE_URL = "https://app.testkit.app/api/v1";
 const INITIAL_DELAY = 10000;
@@ -115,8 +114,8 @@ function logSummary(runs) {
 
 function icon(status) {
   return status === "failed"
-    ? `${styles.red.open}✗${styles.red.close}`
-    : `${styles.green.open}✔${styles.green.close}`;
+    ? `\u001B[31m✗\u001B[39m`
+    : `\u001B[32m✔\u001B[39m`;
 }
 
 run();
