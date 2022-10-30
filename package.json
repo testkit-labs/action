@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "GitHub action to run Testkit tests in the CI",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "lint": "eslint .",
     "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
