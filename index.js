@@ -56,8 +56,8 @@ async function poll() {
   runs.forEach((run) => {
     const { id, status, name } = run;
     const previousRunState = currentGroupRun.runs.find((r) => r.id === id);
-    if (status !== previousRunState.status) {
-      core.info(`Test suite ${name} status: ${status ? status : "pending"}`);
+    if (status !== previousRunState.status && ["failed", "passed"].includes(status)) {
+      core.info(`Test suite ${name} ${status ? status : "pending"}`);
     }
   });
 
