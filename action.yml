@@ -1,6 +1,6 @@
-name: 'Testkit Labs'
+name: 'Testkit Action'
 author: 'Testkit, Inc.'
-description: 'Run your Testkit tests in your CI'
+description: 'Run your codeless Testkit tests in your CI'
 inputs:
   api_key:
     description: 'Your Testkit Organization API Key'
